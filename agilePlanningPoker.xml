@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+        <ModulePrefs title="Agile Planning Poker">
+                <Require feature="rpc" />
+                <Require feature="views" />
+                <Require feature="locked-domain" />
+        </ModulePrefs>
+        <Content type="html"><![CDATA[     
+
+<html>
+<style type="text/css">
+  body {
+    background-image: url("https://dl.dropboxusercontent.com/u/5278929/background.png")
+  }
+  p {
+    margin: 0 0 10px 0;
+  }
+  ul {
+    list-style: none;
+    margin-top: 30px;
+  }
+  ul li {
+    background-repeat: no-repeat; 
+    padding-left: 30px;
+    height: 20px;
+    margin-bottom:10px;
+    font-weight: bold;
+  }
+  .estimate {
+    color: #fff;
+  }
+  ul li.red {
+    background-image: url("https://dl.dropboxusercontent.com/u/5278929/red.png");
+  }
+  ul li.green {
+    background-image: url("https://dl.dropboxusercontent.com/u/5278929/green.png");
+  }
+  .cardButton {
+    -moz-box-shadow:inset 0px 0px 0px 1px #97c4fe;
+    -webkit-box-shadow:inset 0px 0px 0px 1px #97c4fe;
+    box-shadow:inset 0px 0px 0px 1px #97c4fe;
+    background-color:#3d94f6;
+    -webkit-border-top-left-radius:11px;
+    -moz-border-radius-topleft:11px;
+    border-top-left-radius:11px;
+    -webkit-border-top-right-radius:11px;
+    -moz-border-radius-topright:11px;
+    border-top-right-radius:11px;
+    -webkit-border-bottom-right-radius:11px;
+    -moz-border-radius-bottomright:11px;
+    border-bottom-right-radius:11px;
+    -webkit-border-bottom-left-radius:11px;
+    -moz-border-radius-bottomleft:11px;
+    border-bottom-left-radius:11px;
+    text-indent:0px;
+    border:1px solid #337fed;
+    display:inline-block;
+    color:#ffffff;
+    font-family:Verdana;
+    font-size:17px;
+    font-weight:bold;
+    font-style:normal;
+    height:37px;
+    line-height:37px;
+    width:54px;
+    text-decoration:none;
+    text-align:center;
+    text-shadow:1px -3px 0px #1570cd;
+  }.cardButton:hover {
+    background-color:#1e62d0;
+  }.cardButton:active {
+    position:relative;
+    top:1px;
+  }
+  .resetButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #f5978e;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #f5978e;
+    box-shadow:inset 0px 1px 0px 0px #f5978e;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #f24537), color-stop(1, #c62d1f) );
+    background:-moz-linear-gradient( center top, #f24537 5%, #c62d1f 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f24537', endColorstr='#c62d1f');
+    background-color:#f24537;
+    -webkit-border-top-left-radius:6px;
+    -moz-border-radius-topleft:6px;
+    border-top-left-radius:6px;
+    -webkit-border-top-right-radius:6px;
+    -moz-border-radius-topright:6px;
+    border-top-right-radius:6px;
+    -webkit-border-bottom-right-radius:6px;
+    -moz-border-radius-bottomright:6px;
+    border-bottom-right-radius:6px;
+    -webkit-border-bottom-left-radius:6px;
+    -moz-border-radius-bottomleft:6px;
+    border-bottom-left-radius:6px;
+    text-indent:0;
+    border:1px solid #d02718;
+    display:inline-block;
+    color:#ffffff;
+    font-family:Verdana;
+    font-size:15px;
+    font-weight:bold;
+    font-style:normal;
+    height:36px;
+    line-height:36px;
+    width:115px;
+    text-decoration:none;
+    text-align:center;
+    text-shadow:1px 1px 0px #810e05;
+  }
+  .resetButton:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c62d1f), color-stop(1, #f24537) );
+    background:-moz-linear-gradient( center top, #c62d1f 5%, #f24537 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c62d1f', endColorstr='#f24537');
+    background-color:#c62d1f;
+  }.resetButton:active {
+    position:relative;
+    top:1px;
+  }
+  .participantName {
+    width: 140px;
+    float: left;
+  }
+  .participantName span {
+    width: inherit;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    color: #f5deb3;
+  }
+  #planningTypeContainer {
+    text-align: center;
+    margin: 20px 0;
+  }
+  #planningType {
+    width: 115px;
+  }
+  select {
+    padding:3px;
+    margin: 0;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    -moz-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    background: #f8f8f8;
+    color:#000;
+    border:none;
+    outline:none;
+    display: inline-block;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    cursor:pointer;
+    padding-left: 5px;
+  }
+  label {
+    position:relative
+  }
+  label:after {
+      content:'<>';
+      font:11px "Consolas", monospace;
+      color:#aaa;
+      -webkit-transform:rotate(90deg);
+      -moz-transform:rotate(90deg);
+      -ms-transform:rotate(90deg);
+      transform:rotate(90deg);
+      right:8px; top:2px;
+      padding:0 0 2px;
+      border-bottom:1px solid #ddd;
+      position:absolute;
+      pointer-events:none;
+  }
+  label:before {
+      content:'';
+      right:6px; top:0px;
+      width:20px; height:20px;
+      background:#f8f8f8;
+      position:absolute;
+      pointer-events:none;
+      display:block;
+  }
+</style>
+<body>
+
+<script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
+
+<h3 style="text-align:center;margin-top:20px;color:#fff">Planning Poker</h3>
+
+<p style="text-align:center;">
+  <input class="resetButton" type="button" value="reset" onClick="resetCards()"/>
+</p>
+
+<div id="planningTypeContainer">
+  <label>
+    <select id="planningType" onchange="changePlanningType()">
+      <option value="poker">Poker</option>
+      <option value="shirt">T Shirts</option>
+    </select>
+  </label>
+</div>
+<div id="planningCards">
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="0" onClick="cardSelected('0')"/>
+    <input class="cardButton" type="button" value="0.5" onClick="cardSelected('0.5')"/>
+    <input class="cardButton" type="button" value="1" onClick="cardSelected('1')"/>
+  </p>
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="2" onClick="cardSelected('2')"/>
+    <input class="cardButton" type="button" value="3" onClick="cardSelected('3')"/>
+    <input class="cardButton" type="button" value="5" onClick="cardSelected('5')"/>
+  </p>
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="8" onClick="cardSelected('8')"/>
+    <input class="cardButton" type="button" value="13" onClick="cardSelected('13')"/>
+    <input class="cardButton" type="button" value="20" onClick="cardSelected('20')"/>
+  </p>
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="40" onClick="cardSelected('40')"/>
+    <input class="cardButton" type="button" value="100" onClick="cardSelected('100')"/>
+    <input class="cardButton" type="button" value="?" onClick="cardSelected('?')"/>
+  </p>
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="break" style="font-size:13px;" onClick="cardSelected('break')"/>
+    <input class="cardButton" type="button" value="&infin;" onClick="cardSelected('infinite')"/>
+  </p>
+</div>
+<div id="planningShirts" style="display:none">
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="0" onClick="cardSelected('0')"/>
+    <input class="cardButton" type="button" value="XXS" onClick="cardSelected('XXS')"/>
+    <input class="cardButton" type="button" value="XS" onClick="cardSelected('XS')"/>
+  </p>
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="S" onClick="cardSelected('S')"/>
+    <input class="cardButton" type="button" value="M" onClick="cardSelected('M')"/>
+    <input class="cardButton" type="button" value="L" onClick="cardSelected('L')"/>
+  </p>
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="XL" onClick="cardSelected('XL')"/>
+    <input class="cardButton" type="button" value="XXL" onClick="cardSelected('XXL')"/>
+    <input class="cardButton" type="button" value="?" onClick="cardSelected('?')"/>
+  </p>
+  <p style="text-align:center;">
+    <input class="cardButton" type="button" value="break" style="font-size:13px;" onClick="cardSelected('break')"/>
+    <input class="cardButton" type="button" value="&infin;" onClick="cardSelected('infinite')"/>
+  </p>
+</div>
+
+
+<div id="participantsDiv"></div>
+
+<script>
+var localParticipantID;
+var sharedData;
+
+var changeBoard = function(message) {
+  var board = (message == 'poker') ? 'planningCards' : 'planningShirts';
+  var notboard = (message == 'poker') ? 'planningShirts' : 'planningCards';
+  document.getElementById(board).style.display = 'block';
+  document.getElementById(notboard).style.display = 'none';
+  document.getElementById('planningType').value = message;
+}
+
+var onBoardChange = function(eventObj) {
+  changeBoard(eventObj.message);
+}
+
+function changePlanningType() {
+  var elem = document.getElementById("planningType"),
+    board = elem.options[elem.selectedIndex].value;
+  changeBoard(board);
+  gapi.hangout.data.sendMessage(board);
+  resetCards();
+}
+
+function resetCards() {
+  for (var key in sharedData) {
+    gapi.hangout.data.clearValue(key);
+  }
+}
+
+function showParticipants() {
+  var participants = gapi.hangout.getEnabledParticipants();
+  var retVal = '<ul class="participantsList">';
+
+  for (var index in participants) {
+    var participant = participants[index];
+    retVal += '<li class="red"><div class="participantName"><span>' + participant.person.displayName + '</span></div> <span class="estimate" id="' + participant.id + '" style="visibility:hidden;"></span></li>';
+  }
+
+  retVal += '</ul>';
+
+  var div = document.getElementById('participantsDiv');
+  div.innerHTML = retVal;
+}
+
+function cardSelected(cardNumber) {
+  var element = document.getElementById(localParticipantID);
+  element.innerHTML = cardNumber;
+  element.style.visibility = 'visible';
+  gapi.hangout.data.setValue(localParticipantID,cardNumber.toString());
+}
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+var onStateChange = function(eventObj) {
+  var participants = gapi.hangout.getEnabledParticipants();
+  sharedData = eventObj.state;
+
+  for (var i = 0; i < eventObj.addedKeys.length; ++i) {
+      document.getElementById(eventObj.addedKeys[i].key).parentNode.className = "green";
+  }
+
+  for (var i = 0; i < eventObj.removedKeys.length; ++i) {
+      var liElement = document.getElementById(eventObj.removedKeys[i]);
+      liElement.parentNode.className = "red";
+      liElement.innerHTML = '';
+  }
+
+  if (Object.size(sharedData) == participants.length) {
+    for (var key in sharedData) {
+      var element = document.getElementById(key);
+      element.innerHTML = sharedData[key];
+      element.style.visibility = 'visible';
+    }
+  }
+}
+
+var resetState = function(eventObj) {
+  resetCards();  
+  showParticipants();
+};
+
+
+function init() {
+  // When API is ready...                                                         
+  gapi.hangout.onApiReady.add(
+      function(eventObj) {
+        if (eventObj.isApiReady) {
+          localParticipantID = gapi.hangout.getLocalParticipantId();
+          gapi.hangout.data.onStateChanged.add(onStateChange);
+          gapi.hangout.data.onMessageReceived.add(onBoardChange);
+          gapi.hangout.onParticipantsEnabled.add(resetState);
+          gapi.hangout.onParticipantsDisabled.add(resetState);
+          showParticipants();
+        }
+      }
+  );
+}
+
+// Wait for gadget to load.                                                       
+gadgets.util.registerOnLoadHandler(init);
+</script>
+</body>
+]]>
+</Content>
+</Module>
