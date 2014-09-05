@@ -12,10 +12,12 @@ To install and play around with the extension
 A. Installation
 
 Steps to install the extension:
+
 1. Go to URL:  https://googledrive.com/host/0B4fgYa2os19ORE5SSGg1RWc0Vms/hangout.html
 2. Click on Start Hangout to open a hangout window. Join the hangout.
 3. Click cancel when it shows to invite more people.
 4. Click Continue and Accept the permissions to complete the installation.
+
 
 B. What the extension does and how to use it?
 
